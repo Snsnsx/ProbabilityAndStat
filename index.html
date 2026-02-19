@@ -2,855 +2,756 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Статистика — Контрольная работа</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Проверочная работа — Статистика</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Unbounded:wght@400;700;900&display=swap');
-
   :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --card: #1a1a26;
-    --border: #2a2a3d;
-    --accent: #00e5ff;
-    --accent2: #ff006e;
-    --accent3: #aaff00;
-    --text: #e8e8f0;
-    --muted: #6b6b8a;
-    --danger: #ff4444;
-    --success: #00e676;
+    --bg: #0d0f1a;
+    --surface: #141728;
+    --surface2: #1c2038;
+    --border: #2a2f50;
+    --accent: #5b8dee;
+    --accent2: #f7c948;
+    --accent3: #4ecdc4;
+    --danger: #ff4c6a;
+    --success: #4ecb71;
+    --text: #e8eaf6;
+    --muted: #7a7f9a;
+    --radius: 14px;
   }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
   body {
+    font-family: 'Golos Text', sans-serif;
     background: var(--bg);
     color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
     min-height: 100vh;
     overflow-x: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
   }
 
+  /* ─── NOISE OVERLAY ─── */
   body::before {
     content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 60% 40% at 20% 10%, rgba(0,229,255,0.06) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 50% at 80% 90%, rgba(255,0,110,0.05) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 1000; opacity: .4;
   }
 
-  .container {
-    position: relative;
-    z-index: 1;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px 16px 60px;
-  }
-
-  /* HEADER */
+  /* ─── HEADER ─── */
   .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 0;
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,15,26,.92);
+    backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
-    margin-bottom: 32px;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .logo {
-    font-family: 'Unbounded', sans-serif;
-    font-size: clamp(13px, 3vw, 18px);
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    color: var(--accent);
-  }
-
-  .logo span { color: var(--accent2); }
-
-  /* TIMER */
-  #timer-display {
-    font-family: 'Unbounded', sans-serif;
-    font-size: clamp(22px, 6vw, 38px);
-    font-weight: 900;
-    letter-spacing: 0.04em;
-    color: var(--accent3);
-    text-shadow: 0 0 20px rgba(170,255,0,0.4);
-    transition: color 0.3s;
-  }
-
-  #timer-display.warning { color: var(--danger); text-shadow: 0 0 20px rgba(255,68,68,0.5); animation: pulse 1s infinite; }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  }
-
-  /* SCREENS */
-  .screen { display: none; }
-  .screen.active { display: block; animation: fadeIn 0.4s ease; }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* LOGIN SCREEN */
-  .login-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: clamp(24px, 5vw, 48px);
-    max-width: 480px;
-    margin: 0 auto;
-    margin-top: 40px;
-  }
-
-  .login-card h1 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: clamp(18px, 4vw, 26px);
-    font-weight: 700;
-    margin-bottom: 8px;
-    line-height: 1.3;
-  }
-
-  .login-card p {
-    color: var(--muted);
-    font-size: 13px;
-    margin-bottom: 32px;
-    line-height: 1.6;
-  }
-
-  label {
-    display: block;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  input[type="text"], input[type="number"] {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 16px;
-    padding: 12px 16px;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 20px;
-  }
-
-  input:focus { border-color: var(--accent); }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: var(--accent);
-    color: #000;
-    border: none;
-    border-radius: 8px;
-    font-family: 'Unbounded', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    padding: 14px 28px;
-    cursor: pointer;
-    width: 100%;
-    transition: transform 0.15s, box-shadow 0.2s;
-    text-transform: uppercase;
-  }
-
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,229,255,0.3); }
-  .btn:active { transform: translateY(0); }
-
-  /* TASK SCREEN */
-  .student-info {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    display: flex; align-items: center; justify-content: space-between;
     padding: 12px 20px;
-    margin-bottom: 24px;
-    font-size: 13px;
-    color: var(--muted);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .student-info strong { color: var(--text); }
-
-  .task-header {
-    font-family: 'Unbounded', sans-serif;
-    font-size: clamp(14px, 3.5vw, 20px);
-    font-weight: 700;
-    margin-bottom: 6px;
-    color: var(--accent);
-  }
-
-  .task-desc {
-    color: var(--muted);
-    font-size: 13px;
-    line-height: 1.7;
-    margin-bottom: 28px;
-  }
-
-  /* CHART */
-  .chart-wrap {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px 16px 16px;
-    margin-bottom: 28px;
-    overflow-x: auto;
-  }
-
-  .chart-title {
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    padding-left: 8px;
-  }
-
-  .chart-inner {
-    display: flex;
-    align-items: flex-end;
-    gap: clamp(6px, 2vw, 16px);
-    height: 200px;
-    padding: 0 8px;
-    min-width: 300px;
-  }
-
-  .bar-group {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    height: 100%;
-    justify-content: flex-end;
-  }
-
-  .bar {
-    width: 100%;
-    background: linear-gradient(to top, var(--accent2), var(--accent));
-    border-radius: 4px 4px 0 0;
-    position: relative;
-    min-height: 4px;
-    transition: opacity 0.2s;
-    cursor: default;
-    max-width: 60px;
-  }
-
-  .bar:hover { opacity: 0.8; }
-
-  .bar-val {
-    position: absolute;
-    top: -22px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 11px;
-    color: var(--accent3);
-    white-space: nowrap;
-    font-weight: 700;
-  }
-
-  .bar-label {
-    font-size: 11px;
-    color: var(--muted);
-    text-align: center;
-  }
-
-  /* ANSWER SECTION */
-  .answer-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  @media (max-width: 480px) {
-    .answer-grid { grid-template-columns: 1fr; }
-  }
-
-  .answer-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-  }
-
-  .answer-card label {
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    margin-bottom: 10px;
-  }
-
-  .answer-card input {
-    margin-bottom: 0;
-  }
-
-  /* RESULT */
-  .result-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: clamp(24px, 5vw, 48px);
-    max-width: 600px;
-    margin: 0 auto;
-    margin-top: 32px;
-  }
-
-  .result-card h2 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: clamp(16px, 4vw, 24px);
-    margin-bottom: 24px;
-  }
-
-  .result-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
     gap: 12px;
-    flex-wrap: wrap;
   }
-
-  .result-row:last-child { border-bottom: none; }
-
-  .result-label { color: var(--muted); }
-
-  .result-value { font-weight: 700; }
-
-  .correct { color: var(--success); }
-  .incorrect { color: var(--danger); }
-
-  .score-big {
-    font-family: 'Unbounded', sans-serif;
-    font-size: clamp(36px, 10vw, 60px);
-    font-weight: 900;
-    text-align: center;
-    margin: 28px 0;
+  .header-title { font-family: 'Unbounded', sans-serif; font-size: .75rem; font-weight: 600; color: var(--accent); letter-spacing: .06em; text-transform: uppercase; }
+  .student-name { font-size: .85rem; color: var(--muted); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .timer {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 6px 14px; border-radius: 50px;
+    font-family: 'Unbounded', sans-serif; font-size: .9rem; font-weight: 600;
+    color: var(--accent2);
+    transition: color .3s, border-color .3s;
   }
+  .timer.danger { color: var(--danger); border-color: var(--danger); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+  .timer-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: blink 1s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-  /* BANNER */
-  #cheat-banner {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.92);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+  /* ─── SCREENS ─── */
+  .screen { display: none; animation: fadeUp .4s ease; }
+  .screen.active { display: block; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  .container { max-width: 680px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  /* ─── INTRO ─── */
+  .intro-hero {
+    text-align: center; padding: 40px 0 32px;
   }
-
-  #cheat-banner.show { display: flex; }
-
-  .banner-inner {
-    background: var(--surface);
-    border: 2px solid var(--danger);
-    border-radius: 16px;
-    padding: clamp(24px, 5vw, 48px);
-    max-width: 480px;
-    width: 100%;
-    text-align: center;
-    animation: bannerIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  }
-
-  @keyframes bannerIn {
-    from { transform: scale(0.7); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-
-  .banner-icon { font-size: 56px; margin-bottom: 16px; }
-
-  .banner-inner h2 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: clamp(16px, 4vw, 22px);
-    color: var(--danger);
-    margin-bottom: 12px;
-  }
-
-  .banner-inner p {
-    color: var(--muted);
-    font-size: 13px;
-    line-height: 1.7;
-    margin-bottom: 24px;
-  }
-
-  .btn-close {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--danger);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-family: 'Unbounded', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 12px 24px;
-    cursor: pointer;
-    text-transform: uppercase;
-  }
-
-  .violation-count {
+  .intro-badge {
     display: inline-block;
-    background: rgba(255,68,68,0.15);
-    border: 1px solid var(--danger);
-    border-radius: 6px;
-    padding: 4px 12px;
-    font-size: 12px;
-    color: var(--danger);
-    margin-top: 16px;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    color: #fff; font-family: 'Unbounded', sans-serif; font-size: .65rem; letter-spacing: .1em;
+    text-transform: uppercase; padding: 5px 14px; border-radius: 50px; margin-bottom: 20px;
   }
+  .intro-title { font-family: 'Unbounded', sans-serif; font-size: clamp(1.5rem,5vw,2.2rem); font-weight: 800; line-height: 1.2; margin-bottom: 12px; }
+  .intro-title span { color: var(--accent2); }
+  .intro-sub { color: var(--muted); font-size: .95rem; line-height: 1.6; }
+  .info-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 28px 0; }
+  .info-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px; text-align: center;
+  }
+  .info-card .ic-val { font-family: 'Unbounded', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--accent2); }
+  .info-card .ic-lbl { font-size: .78rem; color: var(--muted); margin-top: 4px; }
 
-  /* DATA TABLE */
+  /* ─── FORM ─── */
+  .field { margin-bottom: 16px; }
+  label { display: block; font-size: .8rem; font-weight: 600; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; margin-bottom: 8px; }
+  input[type="text"] {
+    width: 100%; background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
+    color: var(--text); font-family: 'Golos Text', sans-serif; font-size: 1rem;
+    transition: border-color .2s;
+    -webkit-user-select: text; user-select: text;
+  }
+  input[type="text"]:focus { outline: none; border-color: var(--accent); }
+  input[type="text"]::placeholder { color: var(--muted); }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 15px 24px; border-radius: var(--radius);
+    font-family: 'Unbounded', sans-serif; font-size: .85rem; font-weight: 600;
+    letter-spacing: .04em; cursor: pointer; border: none; transition: all .2s;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #4a7de0; transform: translateY(-1px); }
+  .btn-success { background: var(--success); color: #0d1a12; }
+  .btn-success:hover { opacity: .9; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+  /* ─── TASK CARD ─── */
+  .task-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
+    overflow: hidden; margin-bottom: 20px;
+  }
+  .task-header {
+    background: var(--surface2); border-bottom: 1px solid var(--border);
+    padding: 16px 20px; display: flex; align-items: center; gap: 12px;
+  }
+  .task-num {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Unbounded', sans-serif; font-size: .85rem; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+  .task-title { font-family: 'Unbounded', sans-serif; font-size: .85rem; font-weight: 600; }
+  .task-body { padding: 20px; }
+  .task-desc { font-size: .9rem; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+
+  /* ─── CHART ─── */
+  .chart-wrap { margin: 16px 0; background: var(--surface2); border-radius: 12px; padding: 16px; }
+  canvas { width: 100% !important; }
+
+  /* ─── DATA TABLE ─── */
   .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-    margin-bottom: 20px;
+    width: 100%; border-collapse: collapse; font-size: .82rem; margin-bottom: 16px;
+    border-radius: 10px; overflow: hidden;
   }
-
   .data-table th {
-    background: var(--surface);
-    color: var(--muted);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 10px 12px;
-    text-align: center;
-    border: 1px solid var(--border);
+    background: var(--surface2); color: var(--muted); font-weight: 600; letter-spacing: .05em;
+    text-transform: uppercase; font-size: .72rem; padding: 10px 14px; text-align: center;
+  }
+  .data-table td { padding: 9px 14px; text-align: center; border-top: 1px solid var(--border); }
+  .data-table tr:hover td { background: rgba(91,141,238,.07); }
+
+  /* ─── ANSWER FIELDS ─── */
+  .answer-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .answer-field { }
+  .answer-field label { margin-bottom: 6px; }
+  .answer-field input[type="number"] {
+    width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 12px 14px;
+    color: var(--text); font-family: 'Golos Text', sans-serif; font-size: 1rem;
+    transition: border-color .2s; text-align: center;
+    -webkit-user-select: text; user-select: text;
+  }
+  .answer-field input[type="number"]:focus { outline: none; border-color: var(--accent); }
+  .answer-field input.correct { border-color: var(--success) !important; background: rgba(78,203,113,.08); }
+  .answer-field input.wrong { border-color: var(--danger) !important; background: rgba(255,76,106,.08); }
+
+  /* ─── TASK 2 SLIDERS ─── */
+  .slider-section { margin-top: 16px; }
+  .slider-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .slider-label { font-size: .8rem; color: var(--muted); min-width: 90px; font-weight: 600; }
+  input[type="range"] {
+    flex: 1; -webkit-appearance: none; height: 6px;
+    background: var(--border); border-radius: 3px; outline: none; cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); cursor: pointer; transition: transform .15s;
+    box-shadow: 0 0 0 4px rgba(91,141,238,.2);
+  }
+  input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.3); }
+  .slider-val {
+    min-width: 36px; text-align: center;
+    font-family: 'Unbounded', sans-serif; font-size: .8rem; color: var(--accent2);
+  }
+  .dist-chart-wrap { margin: 16px 0; background: var(--surface2); border-radius: 12px; padding: 16px; }
+
+  /* ─── DATA DISPLAY ─── */
+  .data-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .chip {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 5px 10px; font-size: .82rem; color: var(--text);
   }
 
-  .data-table td {
-    padding: 8px 12px;
-    text-align: center;
-    border: 1px solid var(--border);
+  /* ─── SCORE / RESULTS ─── */
+  .result-hero { text-align: center; padding: 32px 0 24px; }
+  .score-circle {
+    width: 120px; height: 120px; border-radius: 50%;
+    border: 4px solid var(--accent); margin: 0 auto 16px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: radial-gradient(circle, rgba(91,141,238,.12), transparent);
   }
+  .score-num { font-family: 'Unbounded', sans-serif; font-size: 2rem; font-weight: 800; color: var(--accent2); }
+  .score-max { font-size: .75rem; color: var(--muted); }
+  .result-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  .result-table td { padding: 10px 12px; border-top: 1px solid var(--border); }
+  .result-table td:first-child { color: var(--muted); }
+  .result-table td:last-child { text-align: right; font-weight: 600; }
 
-  .data-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
-
-  /* Timer bar */
-  .timer-bar-wrap {
-    height: 3px;
-    background: var(--border);
-    border-radius: 2px;
-    margin-bottom: 28px;
-    overflow: hidden;
+  /* ─── BANNER ─── */
+  .violation-banner {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: rgba(13,15,26,.97);
+    align-items: center; justify-content: center; flex-direction: column;
+    text-align: center; padding: 32px;
   }
+  .violation-banner.show { display: flex; animation: fadeUp .3s ease; }
+  .vb-icon { font-size: 4rem; margin-bottom: 16px; }
+  .vb-title { font-family: 'Unbounded', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--danger); margin-bottom: 12px; }
+  .vb-text { color: var(--muted); font-size: .95rem; line-height: 1.6; max-width: 360px; }
+  .vb-close { margin-top: 24px; }
 
-  #timer-bar {
-    height: 100%;
-    background: linear-gradient(to right, var(--accent), var(--accent3));
-    border-radius: 2px;
-    transition: width 1s linear, background 0.5s;
+  /* ─── PROGRESS ─── */
+  .progress-bar { height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 20px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent3)); border-radius: 2px; transition: width .3s; }
+
+  /* ─── SECTION NAV ─── */
+  .task-nav { display: flex; gap: 10px; margin-bottom: 20px; }
+  .nav-tab {
+    flex: 1; padding: 10px; border-radius: 10px; text-align: center;
+    font-family: 'Unbounded', sans-serif; font-size: .72rem; font-weight: 600;
+    border: 1.5px solid var(--border); background: var(--surface);
+    color: var(--muted); cursor: pointer; transition: all .2s;
+  }
+  .nav-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(91,141,238,.1); }
+  .nav-tab.done { border-color: var(--success); color: var(--success); background: rgba(78,203,113,.08); }
+
+  @media (max-width: 400px) {
+    .answer-group { grid-template-columns: 1fr; }
+    .info-cards { grid-template-columns: 1fr 1fr; }
+    .intro-title { font-size: 1.3rem; }
   }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<div class="container">
-  <div class="header">
-    <div class="logo">СТАТ<span>КР</span></div>
-    <div id="timer-display">20:00</div>
+<!-- HEADER (hidden until test starts) -->
+<header class="header" id="mainHeader" style="display:none">
+  <div>
+    <div class="header-title">Проверочная работа</div>
+    <div class="student-name" id="headerName">—</div>
   </div>
-
-  <!-- LOGIN SCREEN -->
-  <div class="screen active" id="screen-login">
-    <div class="login-card">
-      <h1>Контрольная работа</h1>
-      <p>Тема: «Анализ данных. Среднее и медиана»<br>Время выполнения: <strong style="color:var(--accent)">20 минут</strong>. Не покидайте страницу!</p>
-      <label for="inp-surname">Фамилия</label>
-      <input type="text" id="inp-surname" placeholder="Иванов">
-      <label for="inp-name">Имя</label>
-      <input type="text" id="inp-name" placeholder="Иван">
-      <button class="btn" onclick="startExam()">▶ Начать работу</button>
-    </div>
+  <div class="timer" id="timer">
+    <span class="timer-dot"></span>
+    <span id="timerVal">20:00</span>
   </div>
+</header>
 
-  <!-- TASK SCREEN -->
-  <div class="screen" id="screen-task">
-    <div class="student-info">
-      <span>👤</span>
-      <span>Ученик: <strong id="student-name-display"></strong></span>
+<!-- VIOLATION BANNER -->
+<div class="violation-banner" id="violationBanner">
+  <div class="vb-icon">⚠️</div>
+  <div class="vb-title">Нарушение!</div>
+  <div class="vb-text">Вы покинули страницу проверочной работы. Это нарушение зафиксировано и будет учтено при проверке. Возвращайтесь к выполнению заданий.</div>
+  <button class="btn btn-primary vb-close" onclick="closeViolation()" style="max-width:220px">Вернуться к работе</button>
+</div>
+
+<!-- ═══════════════════════════════════ SCREEN: INTRO ═══════ -->
+<div class="screen active" id="screenIntro">
+  <div class="container">
+    <div class="intro-hero">
+      <div class="intro-badge">Статистика • 8 класс</div>
+      <div class="intro-title">Проверочная<br><span>работа</span></div>
+      <div class="intro-sub">Внимательно читайте условия заданий.<br>Удачи!</div>
+    </div>
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="ic-val">20</div>
+        <div class="ic-lbl">минут</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-val">2</div>
+        <div class="ic-lbl">задания</div>
+      </div>
+    </div>
+    <div class="field">
+      <label for="inputSurname">Фамилия</label>
+      <input type="text" id="inputSurname" placeholder="Иванов" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="inputName">Имя</label>
+      <input type="text" id="inputName" placeholder="Иван" autocomplete="off">
+    </div>
+    <button class="btn btn-primary" onclick="startTest()">Начать работу →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SCREEN: TEST ═══════ -->
+<div class="screen" id="screenTest">
+  <div class="container">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="task-nav">
+      <div class="nav-tab active" id="tab1" onclick="showTask(1)">Задание 1</div>
+      <div class="nav-tab" id="tab2" onclick="showTask(2)">Задание 2</div>
     </div>
 
-    <div class="timer-bar-wrap">
-      <div id="timer-bar" style="width:100%"></div>
-    </div>
-
-    <div class="task-header">Задание 1. Столбчатая диаграмма</div>
-    <p class="task-desc">
-      Ниже представлены данные наблюдений: значения <em style="color:var(--accent)">x</em> и их частоты <em style="color:var(--accent2)">y</em>.<br>
-      Изучите диаграмму, затем вычислите <strong>среднее значение</strong> и <strong>медиану</strong> выборки и введите ответы в поля ниже.
-    </p>
-
-    <!-- DATA TABLE -->
-    <div class="chart-wrap" style="padding:20px 20px 12px; margin-bottom:12px;">
-      <div class="chart-title">Таблица данных</div>
-      <div style="overflow-x:auto;">
-        <table class="data-table" id="data-table"></table>
+    <!-- TASK 1 -->
+    <div id="task1block">
+      <div class="task-card">
+        <div class="task-header">
+          <div class="task-num">1</div>
+          <div class="task-title">Анализ диаграммы: среднее и медиана</div>
+        </div>
+        <div class="task-body">
+          <div class="task-desc">Изучите столбчатую диаграмму и таблицу данных ниже. Вычислите среднее арифметическое и медиану набора данных и введите ответы.</div>
+          <div class="chart-wrap"><canvas id="chart1"></canvas></div>
+          <table class="data-table" id="dataTable1"></table>
+          <div class="answer-group">
+            <div class="answer-field">
+              <label>Среднее арифметическое</label>
+              <input type="number" id="ans1mean" placeholder="0.0" step="0.01">
+            </div>
+            <div class="answer-field">
+              <label>Медиана</label>
+              <input type="number" id="ans1med" placeholder="0.0" step="0.01">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- CHART -->
-    <div class="chart-wrap">
-      <div class="chart-title">Столбчатая диаграмма частот</div>
-      <div class="chart-inner" id="chart"></div>
-    </div>
-
-    <!-- ANSWERS -->
-    <div class="answer-grid">
-      <div class="answer-card">
-        <label for="ans-mean">Среднее значение (x̄)</label>
-        <input type="number" id="ans-mean" placeholder="Введите ответ" step="0.01">
-      </div>
-      <div class="answer-card">
-        <label for="ans-median">Медиана (Me)</label>
-        <input type="number" id="ans-median" placeholder="Введите ответ" step="0.01">
+    <!-- TASK 2 -->
+    <div id="task2block" style="display:none">
+      <div class="task-card">
+        <div class="task-header">
+          <div class="task-num">2</div>
+          <div class="task-title">Построение гистограммы распределения</div>
+        </div>
+        <div class="task-body">
+          <div class="task-desc">Ниже представлен набор из 30 числовых значений. При помощи ползунков установите высоту каждого из 6 столбцов гистограммы так, чтобы она корректно отображала распределение данных по интервалам.</div>
+          <div class="data-chips" id="dataChips2"></div>
+          <div class="dist-chart-wrap"><canvas id="chart2"></canvas></div>
+          <div class="slider-section" id="sliderSection"></div>
+        </div>
       </div>
     </div>
 
-    <button class="btn" onclick="submitAnswers()">✓ Отправить ответы</button>
+    <button class="btn btn-success" onclick="submitTest()">Завершить и сдать работу ✓</button>
   </div>
+</div>
 
-  <!-- RESULT SCREEN -->
-  <div class="screen" id="screen-result">
-    <div class="result-card">
-      <h2>📊 Результат работы</h2>
-      <div class="score-big" id="score-display">—</div>
-      <div id="result-details"></div>
-      <div style="margin-top:20px; color: var(--muted); font-size:12px; text-align:center;">
-        Работа сдана. Спасибо!
+<!-- ═══════════════════════════════════ SCREEN: RESULT ═══════ -->
+<div class="screen" id="screenResult">
+  <div class="container">
+    <div class="result-hero">
+      <div class="score-circle">
+        <div class="score-num" id="scoreNum">—</div>
+        <div class="score-max">из 4</div>
+      </div>
+      <div class="intro-title" style="font-size:1.4rem">Работа сдана!</div>
+      <div class="intro-sub" style="margin-top:8px" id="resultMsg">—</div>
+    </div>
+    <div class="task-card">
+      <div class="task-header"><div class="task-num" style="background:linear-gradient(135deg,var(--accent2),#e8a020)">★</div><div class="task-title">Детали</div></div>
+      <div class="task-body">
+        <table class="result-table" id="resultTable"></table>
       </div>
     </div>
   </div>
 </div>
 
-<!-- CHEAT BANNER -->
-<div id="cheat-banner">
-  <div class="banner-inner">
-    <div class="banner-icon">⚠️</div>
-    <h2>Нарушение!</h2>
-    <p id="banner-msg">Вы покинули страницу или переключились на другое приложение. Это фиксируется системой.</p>
-    <div class="violation-count" id="violation-count">Замечание #1</div>
-    <br><br>
-    <button class="btn-close" onclick="closeBanner()">Понятно, вернуться</button>
-  </div>
-</div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-// ─── STATE ─────────────────────────────────────────────────────────────────
+// ═══ CONFIG ═══
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec'; // ← замените
 const TOTAL_SECONDS = 20 * 60;
-let secondsLeft = TOTAL_SECONDS;
+
+// ═══ STATE ═══
+let studentName = '';
 let timerInterval = null;
-let examStarted = false;
-let examDone = false;
+let secondsLeft = TOTAL_SECONDS;
+let testStartTime = null;
 let violationCount = 0;
-let bannerPending = false;
+let chart1Instance = null;
+let chart2Instance = null;
 
-let chartData = []; // [{x, y}]
+// task1 data
+let t1x = [], t1y = [], t1mean = 0, t1median = 0;
+// task2 data
+let t2data = [], t2intervals = [], t2counts = [], t2sliderVals = [];
 
-// ─── GENERATE DATA ──────────────────────────────────────────────────────────
-function generateData() {
-  // 6 distinct integer x values
+// ═══ DISABLE COPY / SCREENSHOT ═══
+document.addEventListener('copy', e => e.preventDefault());
+document.addEventListener('cut', e => e.preventDefault());
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  // block PrintScreen, Ctrl+P, Ctrl+S, F12
+  if (e.key === 'PrintScreen') { e.preventDefault(); showViolation(); }
+  if ((e.ctrlKey || e.metaKey) && ['p','s','a','c','x','u'].includes(e.key.toLowerCase())) e.preventDefault();
+  if (e.key === 'F12') e.preventDefault();
+});
+
+// ═══ LEAVE PAGE DETECTION ═══
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && testActive()) triggerViolation();
+});
+window.addEventListener('blur', () => {
+  if (testActive()) triggerViolation();
+});
+window.addEventListener('beforeunload', e => {
+  if (testActive()) { e.preventDefault(); e.returnValue = ''; }
+});
+
+function testActive() {
+  return document.getElementById('screenTest').classList.contains('active');
+}
+function triggerViolation() {
+  violationCount++;
+  showViolation();
+}
+function showViolation() {
+  document.getElementById('violationBanner').classList.add('show');
+}
+function closeViolation() {
+  document.getElementById('violationBanner').classList.remove('show');
+}
+
+// ═══ START TEST ═══
+function startTest() {
+  const s = document.getElementById('inputSurname').value.trim();
+  const n = document.getElementById('inputName').value.trim();
+  if (!s || !n) { alert('Пожалуйста, введите фамилию и имя.'); return; }
+  studentName = s + ' ' + n;
+  document.getElementById('headerName').textContent = studentName;
+  document.getElementById('mainHeader').style.display = '';
+
+  generateTask1();
+  generateTask2();
+
+  switchScreen('screenTest');
+  testStartTime = new Date();
+  startTimer();
+}
+
+// ═══ TIMER ═══
+function startTimer() {
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    updateTimerDisplay();
+    updateProgress();
+    if (secondsLeft <= 0) { clearInterval(timerInterval); autoSubmit(); }
+  }, 1000);
+}
+function updateTimerDisplay() {
+  const m = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
+  const s = String(secondsLeft % 60).padStart(2, '0');
+  document.getElementById('timerVal').textContent = m + ':' + s;
+  const el = document.getElementById('timer');
+  el.classList.toggle('danger', secondsLeft < 120);
+}
+function updateProgress() {
+  const pct = ((TOTAL_SECONDS - secondsLeft) / TOTAL_SECONDS) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// ═══ TASK NAVIGATION ═══
+function showTask(n) {
+  document.getElementById('task1block').style.display = n === 1 ? '' : 'none';
+  document.getElementById('task2block').style.display = n === 2 ? '' : 'none';
+  document.getElementById('tab1').className = 'nav-tab' + (n===1?' active':'');
+  document.getElementById('tab2').className = 'nav-tab' + (n===2?' active':'');
+}
+
+// ═══════════════════════════════════
+// TASK 1 GENERATION
+// ═══════════════════════════════════
+function generateTask1() {
+  // 6 unique integer x values between 1..20
   const xs = [];
   while (xs.length < 6) {
-    const v = Math.floor(Math.random() * 30) + 1;
+    const v = Math.floor(Math.random() * 18) + 1;
     if (!xs.includes(v)) xs.push(v);
   }
   xs.sort((a, b) => a - b);
 
-  // y values: round decimal fractions (0.1 step, .1 – 1.0 range)
-  const ys = xs.map(() => Math.round((Math.random() * 0.9 + 0.1) * 10) / 10);
+  // 6 frequency y values (decimal, 1 decimal place, sum reasonable)
+  const ys = [];
+  for (let i = 0; i < 6; i++) {
+    ys.push(Math.round((Math.random() * 0.25 + 0.05) * 10) / 10);
+  }
 
-  return xs.map((x, i) => ({ x, y: ys[i] }));
-}
+  t1x = xs; t1y = ys;
 
-// ─── COMPUTE STATS ──────────────────────────────────────────────────────────
-function computeMean(data) {
-  const totalFreq = data.reduce((s, d) => s + d.y, 0);
-  const weightedSum = data.reduce((s, d) => s + d.x * d.y, 0);
-  return Math.round((weightedSum / totalFreq) * 100) / 100;
-}
+  // compute mean: sum(x*y)/sum(y)
+  let sumW = 0, sumXW = 0;
+  for (let i = 0; i < 6; i++) { sumW += ys[i]; sumXW += xs[i] * ys[i]; }
+  t1mean = Math.round((sumXW / sumW) * 100) / 100;
 
-function computeMedian(data) {
-  // Expand data by frequency (round y*10 to get integer counts)
+  // compute median from weighted distribution
+  // expand: for each x[i], weight y[i] (treat as proportion → multiply by 100 for integer counts)
   const expanded = [];
-  data.forEach(d => {
-    const count = Math.round(d.y * 10);
-    for (let i = 0; i < count; i++) expanded.push(d.x);
+  ys.forEach((y, i) => {
+    const cnt = Math.round(y * 20);
+    for (let j = 0; j < cnt; j++) expanded.push(xs[i]);
   });
   expanded.sort((a, b) => a - b);
-  const n = expanded.length;
-  if (n === 0) return 0;
-  if (n % 2 === 1) return expanded[Math.floor(n / 2)];
-  return Math.round(((expanded[n / 2 - 1] + expanded[n / 2]) / 2) * 100) / 100;
-}
+  const mid = Math.floor(expanded.length / 2);
+  t1median = expanded.length % 2 === 0
+    ? Math.round(((expanded[mid - 1] + expanded[mid]) / 2) * 100) / 100
+    : expanded[mid];
 
-// ─── RENDER CHART ───────────────────────────────────────────────────────────
-function renderChart(data) {
-  const maxY = Math.max(...data.map(d => d.y));
-  const chartEl = document.getElementById('chart');
-  chartEl.innerHTML = '';
+  // render table
+  let html = '<thead><tr><th>x</th>';
+  xs.forEach(x => html += `<th>${x}</th>`);
+  html += '</tr><tr><th>y</th>';
+  ys.forEach(y => html += `<td>${y.toFixed(1)}</td>`);
+  html += '</tr></thead>';
+  document.getElementById('dataTable1').innerHTML = html;
 
-  data.forEach(d => {
-    const pct = (d.y / maxY) * 100;
-    const group = document.createElement('div');
-    group.className = 'bar-group';
-
-    const bar = document.createElement('div');
-    bar.className = 'bar';
-    bar.style.height = pct + '%';
-
-    const valLabel = document.createElement('div');
-    valLabel.className = 'bar-val';
-    valLabel.textContent = d.y;
-    bar.appendChild(valLabel);
-
-    const xLabel = document.createElement('div');
-    xLabel.className = 'bar-label';
-    xLabel.textContent = d.x;
-
-    group.appendChild(bar);
-    group.appendChild(xLabel);
-    chartEl.appendChild(group);
+  // render chart
+  if (chart1Instance) chart1Instance.destroy();
+  chart1Instance = new Chart(document.getElementById('chart1'), {
+    type: 'bar',
+    data: {
+      labels: xs.map(String),
+      datasets: [{
+        label: 'Частота y',
+        data: ys,
+        backgroundColor: xs.map((_, i) => `hsla(${210 + i*25},70%,60%,0.8)`),
+        borderColor: xs.map((_, i) => `hsla(${210 + i*25},70%,50%,1)`),
+        borderWidth: 1.5, borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { color: '#e8eaf6', font: { family: 'Golos Text' } } } },
+      scales: {
+        x: { ticks: { color: '#7a7f9a' }, grid: { color: '#2a2f50' } },
+        y: { ticks: { color: '#7a7f9a' }, grid: { color: '#2a2f50' }, beginAtZero: true }
+      }
+    }
   });
 }
 
-function renderTable(data) {
-  const table = document.getElementById('data-table');
-  table.innerHTML = `
-    <tr>
-      <th>x (значение)</th>
-      ${data.map(d => `<th>${d.x}</th>`).join('')}
-    </tr>
-    <tr>
-      <td style="color:var(--muted); font-size:10px; letter-spacing:.08em; text-transform:uppercase;">y (частота)</td>
-      ${data.map(d => `<td style="color:var(--accent2); font-weight:700;">${d.y}</td>`).join('')}
-    </tr>
-  `;
+// ═══════════════════════════════════
+// TASK 2 GENERATION
+// ═══════════════════════════════════
+function generateTask2() {
+  // 30 random values in range 10..90
+  t2data = Array.from({ length: 30 }, () => Math.floor(Math.random() * 81) + 10);
+  t2data.sort((a, b) => a - b);
+
+  const min = t2data[0], max = t2data[t2data.length - 1];
+  const step = Math.ceil((max - min + 1) / 6);
+
+  // build intervals
+  t2intervals = [];
+  t2counts = [];
+  for (let i = 0; i < 6; i++) {
+    const lo = min + i * step;
+    const hi = min + (i + 1) * step;
+    t2intervals.push([lo, hi]);
+    t2counts.push(t2data.filter(v => v >= lo && (i === 5 ? v <= hi : v < hi)).length);
+  }
+
+  // show data chips
+  const chips = document.getElementById('dataChips2');
+  chips.innerHTML = t2data.map(v => `<span class="chip">${v}</span>`).join('');
+
+  // sliders — student sets each bar
+  t2sliderVals = new Array(6).fill(0);
+  const ss = document.getElementById('sliderSection');
+  ss.innerHTML = '';
+  t2intervals.forEach((interval, i) => {
+    const row = document.createElement('div');
+    row.className = 'slider-row';
+    row.innerHTML = `
+      <span class="slider-label">[${interval[0]}–${interval[1]})</span>
+      <input type="range" min="0" max="15" value="0" id="sl${i}" oninput="onSlider(${i},this.value)">
+      <span class="slider-val" id="slv${i}">0</span>
+    `;
+    ss.appendChild(row);
+  });
+
+  renderChart2();
 }
 
-// ─── TIMER ──────────────────────────────────────────────────────────────────
-function formatTime(s) {
-  const m = Math.floor(s / 60);
-  const sec = s % 60;
-  return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+function onSlider(i, v) {
+  t2sliderVals[i] = parseInt(v);
+  document.getElementById('slv' + i).textContent = v;
+  renderChart2();
 }
 
-function startTimer() {
-  const display = document.getElementById('timer-display');
-  const bar = document.getElementById('timer-bar');
-
-  timerInterval = setInterval(() => {
-    secondsLeft--;
-    display.textContent = formatTime(secondsLeft);
-    bar.style.width = (secondsLeft / TOTAL_SECONDS * 100) + '%';
-
-    if (secondsLeft <= 120) { // last 2 min
-      display.classList.add('warning');
-      bar.style.background = 'var(--danger)';
+function renderChart2() {
+  const labels = t2intervals.map(iv => `${iv[0]}–${iv[1]}`);
+  if (chart2Instance) chart2Instance.destroy();
+  chart2Instance = new Chart(document.getElementById('chart2'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Частота (ваш ответ)',
+        data: t2sliderVals,
+        backgroundColor: labels.map((_, i) => `hsla(${160 + i*20},60%,55%,0.8)`),
+        borderColor: labels.map((_, i) => `hsla(${160 + i*20},60%,45%,1)`),
+        borderWidth: 1.5, borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { color: '#e8eaf6', font: { family: 'Golos Text' } } } },
+      scales: {
+        x: { ticks: { color: '#7a7f9a' }, grid: { color: '#2a2f50' } },
+        y: { ticks: { color: '#7a7f9a' }, grid: { color: '#2a2f50' }, beginAtZero: true, max: 15 }
+      }
     }
-
-    if (secondsLeft <= 0) {
-      clearInterval(timerInterval);
-      autoSubmit();
-    }
-  }, 1000);
+  });
 }
 
+// ═══════════════════════════════════
+// SCORING
+// ═══════════════════════════════════
+function scoreTask1() {
+  const rawMean = parseFloat(document.getElementById('ans1mean').value);
+  const rawMed = parseFloat(document.getElementById('ans1med').value);
+  const okMean = !isNaN(rawMean) && Math.abs(rawMean - t1mean) < 0.15;
+  const okMed = !isNaN(rawMed) && Math.abs(rawMed - t1median) < 0.6;
+
+  const elM = document.getElementById('ans1mean');
+  const elMed = document.getElementById('ans1med');
+  elM.className = okMean ? 'correct' : 'wrong';
+  elMed.className = okMed ? 'correct' : 'wrong';
+
+  return { mean: okMean ? 1 : 0, med: okMed ? 1 : 0 };
+}
+
+function scoreTask2() {
+  // compare slider values to actual counts; allow ±1 tolerance per bar
+  let correct = 0;
+  t2counts.forEach((cnt, i) => {
+    if (Math.abs(t2sliderVals[i] - cnt) <= 1) correct++;
+  });
+  // give 1 point if ≥4 out of 6 bars correct, 2 if all 6
+  if (correct === 6) return 2;
+  if (correct >= 4) return 1;
+  return 0;
+}
+
+// ═══════════════════════════════════
+// SUBMIT
+// ═══════════════════════════════════
+function submitTest() {
+  if (!confirm('Завершить работу и сдать ответы?')) return;
+  finalize();
+}
 function autoSubmit() {
-  if (!examDone) {
-    examDone = true;
-    showResult(true);
-  }
+  alert('Время вышло! Работа сдаётся автоматически.');
+  finalize();
 }
 
-// ─── EXAM FLOW ───────────────────────────────────────────────────────────────
-function startExam() {
-  const surname = document.getElementById('inp-surname').value.trim();
-  const name = document.getElementById('inp-name').value.trim();
-  if (!surname || !name) {
-    alert('Введите фамилию и имя!');
-    return;
-  }
-
-  document.getElementById('student-name-display').textContent = surname + ' ' + name;
-
-  chartData = generateData();
-  renderTable(chartData);
-  renderChart(chartData);
-
-  switchScreen('screen-task');
-  examStarted = true;
-  startTimer();
-}
-
-// ─── GOOGLE SHEETS ──────────────────────────────────────────────────────────
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbx1pd9jCGh_PN0WuX5ldAShv5gir2C-X_QQEWEcOum2iUEBT32R9-_ZUovg8IcG3bZ6/exec';
-
-async function sendToSheets(payload) {
-  const statusEl = document.getElementById('send-status');
-  try {
-    statusEl.textContent = '⏳ Отправка результатов...';
-    statusEl.style.color = 'var(--muted)';
-
-    await fetch(SHEETS_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    // no-cors always gives opaque response, assume success
-    statusEl.textContent = '✅ Результаты отправлены учителю';
-    statusEl.style.color = 'var(--success)';
-  } catch (err) {
-    statusEl.textContent = '⚠️ Не удалось отправить — нет соединения';
-    statusEl.style.color = 'var(--danger)';
-  }
-}
-
-function submitAnswers() {
-  if (examDone) return;
-  examDone = true;
+function finalize() {
   clearInterval(timerInterval);
-  showResult(false);
-}
+  const s1 = scoreTask1();
+  const s2 = scoreTask2();
+  const total = s1.mean + s1.med + s2;
 
-function showResult(timeout) {
-  const meanAns = parseFloat(document.getElementById('ans-mean').value);
-  const medianAns = parseFloat(document.getElementById('ans-median').value);
+  const elapsed = Math.round((new Date() - testStartTime) / 1000);
+  const mins = Math.floor(elapsed / 60), secs = elapsed % 60;
+  const timeStr = `${mins}м ${secs}с`;
 
-  const correctMean = computeMean(chartData);
-  const correctMedian = computeMedian(chartData);
+  // show results
+  document.getElementById('scoreNum').textContent = total;
+  const msgs = ['Работа принята. Нужно повторить материал.', 'Хороший результат! Есть над чем поработать.', 'Отлично справились!', 'Великолепный результат!', 'Блестящая работа!'];
+  document.getElementById('resultMsg').textContent = msgs[Math.min(total, 4)];
 
-  const TOLERANCE = 0.1;
-  const meanOk = !isNaN(meanAns) && Math.abs(meanAns - correctMean) <= TOLERANCE;
-  const medianOk = !isNaN(medianAns) && Math.abs(medianAns - correctMedian) <= TOLERANCE;
-
-  const score = (meanOk ? 1 : 0) + (medianOk ? 1 : 0);
-  const scoreColors = ['var(--danger)', 'var(--accent)', 'var(--success)'];
-
-  document.getElementById('score-display').textContent = score + ' / 2';
-  document.getElementById('score-display').style.color = scoreColors[score];
-
-  const timeSpent = TOTAL_SECONDS - secondsLeft;
-  const mins = Math.floor(timeSpent / 60);
-  const secs = timeSpent % 60;
-  const timeStr = `${mins} мин ${secs} сек`;
-
-  document.getElementById('result-details').innerHTML = `
-    <div class="result-row">
-      <span class="result-label">Среднее значение (правильный ответ)</span>
-      <span class="result-value">${correctMean}</span>
-    </div>
-    <div class="result-row">
-      <span class="result-label">Ваш ответ (среднее)</span>
-      <span class="result-value ${meanOk ? 'correct' : 'incorrect'}">${isNaN(meanAns) ? '—' : meanAns} ${meanOk ? '✓' : '✗'}</span>
-    </div>
-    <div class="result-row">
-      <span class="result-label">Медиана (правильный ответ)</span>
-      <span class="result-value">${correctMedian}</span>
-    </div>
-    <div class="result-row">
-      <span class="result-label">Ваш ответ (медиана)</span>
-      <span class="result-value ${medianOk ? 'correct' : 'incorrect'}">${isNaN(medianAns) ? '—' : medianAns} ${medianOk ? '✓' : '✗'}</span>
-    </div>
-    <div class="result-row">
-      <span class="result-label">Время выполнения</span>
-      <span class="result-value">${timeStr}</span>
-    </div>
-    <div class="result-row">
-      <span class="result-label">Нарушений / замечаний</span>
-      <span class="result-value ${violationCount > 0 ? 'incorrect' : 'correct'}">${violationCount}</span>
-    </div>
-    ${timeout ? '<div class="result-row"><span style="color:var(--danger)">⏰ Время истекло — работа сдана автоматически</span></div>' : ''}
-    <div class="result-row" style="justify-content:center;">
-      <span id="send-status" style="font-size:13px;">⏳ Отправка результатов...</span>
-    </div>
+  document.getElementById('resultTable').innerHTML = `
+    <tr><td>Ученик</td><td>${studentName}</td></tr>
+    <tr><td>Задание 1 — среднее</td><td>${s1.mean ? '✓ верно' : `✗ ответ: ${parseFloat(document.getElementById('ans1mean').value)||'—'} | правильно: ${t1mean}`}</td></tr>
+    <tr><td>Задание 1 — медиана</td><td>${s1.med ? '✓ верно' : `✗ ответ: ${parseFloat(document.getElementById('ans1med').value)||'—'} | правильно: ${t1median}`}</td></tr>
+    <tr><td>Задание 2 — гистограмма</td><td>${s2 === 2 ? '✓✓ полный балл' : s2 === 1 ? '✓ частично верно' : '✗ неверно'}</td></tr>
+    <tr><td>Нарушений</td><td>${violationCount}</td></tr>
+    <tr><td>Время</td><td>${timeStr}</td></tr>
+    <tr><td><strong>Итого</strong></td><td><strong>${total} / 4</strong></td></tr>
   `;
 
-  switchScreen('screen-result');
+  switchScreen('screenResult');
+  document.getElementById('mainHeader').style.display = 'none';
 
-  // Send to Google Sheets
-  sendToSheets({
-    student: document.getElementById('student-name-display').textContent,
-    meanAnswer: isNaN(meanAns) ? '' : meanAns,
-    correctMean,
-    meanOk,
-    medianAnswer: isNaN(medianAns) ? '' : medianAns,
-    correctMedian,
-    medianOk,
-    score: score + ' / 2',
-    timeSpent: timeStr,
-    violations: violationCount,
-    xs: chartData.map(d => d.x),
-    ys: chartData.map(d => d.y),
-    timeout
-  });
+  sendToSheets({ studentName, total, s1mean: s1.mean, s1med: s1.med, s2, violationCount, timeStr,
+    ans1mean: document.getElementById('ans1mean').value, ans1med: document.getElementById('ans1med').value,
+    correctMean: t1mean, correctMedian: t1median,
+    sliderAnswers: t2sliderVals.join(','), correctCounts: t2counts.join(',') });
 }
 
+// ═══════════════════════════════════
+// GOOGLE SHEETS
+// ═══════════════════════════════════
+function sendToSheets(data) {
+  if (APPS_SCRIPT_URL.includes('YOUR_SCRIPT_ID')) return; // not configured
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...data, timestamp: new Date().toISOString() })
+  }).catch(() => {});
+}
+
+// ═══ UTILS ═══
 function switchScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
-// ─── CHEAT DETECTION ────────────────────────────────────────────────────────
-function showBanner(msg) {
-  if (examDone) return;
-  violationCount++;
-  document.getElementById('banner-msg').textContent = msg;
-  document.getElementById('violation-count').textContent = `Замечание #${violationCount}`;
-  document.getElementById('cheat-banner').classList.add('show');
-  bannerPending = true;
-}
-
-function closeBanner() {
-  document.getElementById('cheat-banner').classList.remove('show');
-  bannerPending = false;
-}
-
-// Visibility change
-document.addEventListener('visibilitychange', () => {
-  if (!examStarted || examDone) return;
-  if (document.hidden) {
-    showBanner('Вы переключились на другую вкладку или свернули браузер. Это нарушение условий выполнения работы и будет отмечено в протоколе.');
-  }
-});
-
-// beforeunload
-window.addEventListener('beforeunload', (e) => {
-  if (!examStarted || examDone) return;
-  e.preventDefault();
-  e.returnValue = '';
-  return '';
-});
-
-// Focus loss
-window.addEventListener('blur', () => {
-  if (!examStarted || examDone || document.hidden) return;
-  showBanner('Вы покинули окно браузера. Все попытки покинуть страницу фиксируются. Продолжайте работу.');
-});
 </script>
+
+<!--
+═══════════════════════════════════════════════════════════════════
+GOOGLE APPS SCRIPT — вставьте в редактор Google Apps Script:
+═══════════════════════════════════════════════════════════════════
+
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow([
+      'Время', 'Ученик', 'Итого', 'Среднее(зад1)', 'Медиана(зад1)',
+      'Гистограмма(зад2)', 'Нарушений', 'Затрачено',
+      'Ответ среднее', 'Правильное среднее',
+      'Ответ медиана', 'Правильная медиана',
+      'Ответы ползунков', 'Правильные счётчики'
+    ]);
+  }
+
+  sheet.appendRow([
+    data.timestamp, data.studentName, data.total,
+    data.s1mean, data.s1med, data.s2, data.violationCount, data.timeStr,
+    data.ans1mean, data.correctMean,
+    data.ans1med, data.correctMedian,
+    data.sliderAnswers, data.correctCounts
+  ]);
+
+  return ContentService.createTextOutput('ok');
+}
+
+После публикации: Расширения → Apps Script → Развернуть → Веб-приложение
+Скопируйте URL и вставьте в APPS_SCRIPT_URL выше.
+═══════════════════════════════════════════════════════════════════
+-->
 </body>
 </html>
