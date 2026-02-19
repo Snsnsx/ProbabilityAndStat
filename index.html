@@ -702,7 +702,7 @@ function finalize() {
 // GOOGLE SHEETS
 // ═══════════════════════════════════
 function sendToSheets(data) {
-  if (APPS_SCRIPT_URL.includes('YOUR_SCRIPT_ID')) return; // not configured
+  if (APPS_SCRIPT_URL.includes('https://script.google.com/macros/s/AKfycbwNEUKy54FuAd8WOwpM_ZtH4HPoYQPxQJm1cRtPyIIpXpEGceKWW8W0ElvArmzGyvjmxQ/exec')) return; // not configured
   fetch(APPS_SCRIPT_URL, {
     method: 'POST',
     mode: 'no-cors',
