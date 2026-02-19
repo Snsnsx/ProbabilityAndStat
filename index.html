@@ -377,7 +377,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
 // ═══ CONFIG ═══
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec'; // ← замените
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNEUKy54FuAd8WOwpM_ZtH4HPoYQPxQJm1cRtPyIIpXpEGceKWW8W0ElvArmzGyvjmxQ/exec';
 const TOTAL_SECONDS = 20 * 60;
 
 // ═══ STATE ═══
@@ -702,7 +702,7 @@ function finalize() {
 // GOOGLE SHEETS
 // ═══════════════════════════════════
 function sendToSheets(data) {
-  if (APPS_SCRIPT_URL.includes(https://script.google.com/macros/s/AKfycbwNEUKy54FuAd8WOwpM_ZtH4HPoYQPxQJm1cRtPyIIpXpEGceKWW8W0ElvArmzGyvjmxQ/exec)) return; // not configured
+  if (APPS_SCRIPT_URL.includes('YOUR_SCRIPT_ID')) return; // not configured
   fetch(APPS_SCRIPT_URL, {
     method: 'POST',
     mode: 'no-cors',
