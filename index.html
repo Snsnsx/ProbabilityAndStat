@@ -705,6 +705,31 @@ function startExam() {
   startTimer();
 }
 
+// ─── GOOGLE SHEETS ──────────────────────────────────────────────────────────
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbx1pd9jCGh_PN0WuX5ldAShv5gir2C-X_QQEWEcOum2iUEBT32R9-_ZUovg8IcG3bZ6/exec';
+
+async function sendToSheets(payload) {
+  const statusEl = document.getElementById('send-status');
+  try {
+    statusEl.textContent = '⏳ Отправка результатов...';
+    statusEl.style.color = 'var(--muted)';
+
+    await fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    // no-cors always gives opaque response, assume success
+    statusEl.textContent = '✅ Результаты отправлены учителю';
+    statusEl.style.color = 'var(--success)';
+  } catch (err) {
+    statusEl.textContent = '⚠️ Не удалось отправить — нет соединения';
+    statusEl.style.color = 'var(--danger)';
+  }
+}
+
 function submitAnswers() {
   if (examDone) return;
   examDone = true;
@@ -732,6 +757,7 @@ function showResult(timeout) {
   const timeSpent = TOTAL_SECONDS - secondsLeft;
   const mins = Math.floor(timeSpent / 60);
   const secs = timeSpent % 60;
+  const timeStr = `${mins} мин ${secs} сек`;
 
   document.getElementById('result-details').innerHTML = `
     <div class="result-row">
@@ -752,16 +778,36 @@ function showResult(timeout) {
     </div>
     <div class="result-row">
       <span class="result-label">Время выполнения</span>
-      <span class="result-value">${mins} мин ${secs} сек</span>
+      <span class="result-value">${timeStr}</span>
     </div>
     <div class="result-row">
       <span class="result-label">Нарушений / замечаний</span>
       <span class="result-value ${violationCount > 0 ? 'incorrect' : 'correct'}">${violationCount}</span>
     </div>
     ${timeout ? '<div class="result-row"><span style="color:var(--danger)">⏰ Время истекло — работа сдана автоматически</span></div>' : ''}
+    <div class="result-row" style="justify-content:center;">
+      <span id="send-status" style="font-size:13px;">⏳ Отправка результатов...</span>
+    </div>
   `;
 
   switchScreen('screen-result');
+
+  // Send to Google Sheets
+  sendToSheets({
+    student: document.getElementById('student-name-display').textContent,
+    meanAnswer: isNaN(meanAns) ? '' : meanAns,
+    correctMean,
+    meanOk,
+    medianAnswer: isNaN(medianAns) ? '' : medianAns,
+    correctMedian,
+    medianOk,
+    score: score + ' / 2',
+    timeSpent: timeStr,
+    violations: violationCount,
+    xs: chartData.map(d => d.x),
+    ys: chartData.map(d => d.y),
+    timeout
+  });
 }
 
 function switchScreen(id) {
