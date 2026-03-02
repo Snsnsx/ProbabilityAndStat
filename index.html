@@ -753,8 +753,12 @@ function renderTask() {
   img.src = imgSrc;
 }
 
+function normalizeAnswer(val) {
+  return val.trim().replace(',', '.');
+}
+
 function nextTask() {
-  answers[currentTask] = document.getElementById('answerInput').value.trim();
+  answers[currentTask] = normalizeAnswer(document.getElementById('answerInput').value);
   if (!answers[currentTask]) {
     if (!confirm('Ты не ввёл ответ. Пропустить задание?')) return;
   }
