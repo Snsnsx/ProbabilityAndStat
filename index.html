@@ -32,9 +32,10 @@
     overflow-x: hidden;
     -webkit-user-select: none;
     user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  /* background pattern */
   body::before {
     content: '';
     position: fixed;
@@ -57,7 +58,6 @@
     flex-direction: column;
   }
 
-  /* HEADER */
   .top-bar {
     display: flex;
     align-items: center;
@@ -91,15 +91,12 @@
   .timer-box.warn { color: var(--warn); border-color: rgba(255,179,71,0.4); }
   .timer-box.danger { color: var(--danger); border-color: rgba(255,77,109,0.4); animation: pulse 1s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
-
   .timer-icon { font-size: 16px; }
 
-  /* SCREENS */
   .screen { display: none; flex-direction: column; flex: 1; animation: fadeIn 0.4s ease; }
   .screen.active { display: flex; }
   @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
 
-  /* CARDS */
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -108,7 +105,6 @@
     margin-bottom: 16px;
   }
 
-  /* LOGIN */
   .login-title {
     font-family: 'Unbounded', sans-serif;
     font-size: 22px;
@@ -180,7 +176,6 @@
     margin-top: 8px;
   }
 
-  /* TASK */
   .task-header {
     display: flex;
     align-items: center;
@@ -194,10 +189,6 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--accent);
-  }
-  .task-progress {
-    font-size: 12px;
-    color: var(--muted);
   }
 
   .task-img-placeholder {
@@ -224,9 +215,11 @@
     max-height: 300px;
     border-radius: 8px;
     display: none;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-drag: none;
   }
   .img-icon { font-size: 36px; opacity: 0.5; }
-  .img-label { font-size: 11px; opacity: 0.7; margin-top: 4px; }
 
   .answer-label {
     font-size: 14px;
@@ -235,10 +228,7 @@
     color: var(--text);
   }
 
-  .answer-row {
-    display: flex;
-    gap: 10px;
-  }
+  .answer-row { display: flex; gap: 10px; }
 
   .answer-input {
     flex: 1;
@@ -257,7 +247,6 @@
   }
   .answer-input:focus { border-color: var(--accent2); }
 
-  /* DOTS PROGRESS */
   .dots {
     display: flex;
     gap: 6px;
@@ -274,68 +263,40 @@
   .dot.done { background: var(--accent2); border-color: var(--accent2); }
   .dot.current { background: var(--accent); border-color: var(--accent); transform: scale(1.3); }
 
-  /* RESULT */
-  .score-circle {
-    width: 120px; height: 120px;
-    border-radius: 50%;
-    margin: 0 auto 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Unbounded', sans-serif;
-    position: relative;
-  }
-  .score-num {
-    font-size: 36px;
-    font-weight: 800;
-    line-height: 1;
-  }
-  .score-max { font-size: 12px; color: var(--muted); }
-
-  .grade-badge {
-    display: inline-block;
-    font-family: 'Unbounded', sans-serif;
-    font-size: 48px;
-    font-weight: 800;
-    text-align: center;
-    width: 100%;
-    margin-bottom: 8px;
-  }
-
+  /* RESULT - no scores shown */
+  .result-icon { font-size: 64px; text-align: center; margin-bottom: 16px; }
   .result-name {
     text-align: center;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
   }
   .result-sub {
     text-align: center;
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 24px;
-  }
-
-  .answers-breakdown { width: 100%; }
-  .breakdown-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
     font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
   }
-  .breakdown-item:last-child { border-bottom: none; }
-  .ans-correct { color: var(--accent2); font-weight: 700; }
-  .ans-wrong { color: var(--danger); font-weight: 700; }
 
-  /* BANNER */
+  .cancelled-icon { font-size: 64px; text-align: center; margin-bottom: 16px; }
+  .cancelled-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--danger);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .cancelled-text { text-align: center; color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+  .nav-hint { font-size: 12px; color: var(--muted); text-align: center; margin-top: 12px; }
+
   .banner-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(8px);
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(10px);
     z-index: 1000;
     align-items: center;
     justify-content: center;
@@ -369,30 +330,29 @@
   .banner-text { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
   .banner-count { font-size: 13px; color: var(--warn); font-weight: 600; margin-bottom: 16px; }
 
-  /* CANCELLED */
-  .cancelled-icon { font-size: 64px; text-align: center; margin-bottom: 16px; }
-  .cancelled-title {
+  /* Devtools warning */
+  #devtoolsWarning {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #0d0f14;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 40px;
+  }
+  #devtoolsWarning.show { display: flex; }
+  #devtoolsWarning .dw-icon { font-size: 64px; margin-bottom: 20px; }
+  #devtoolsWarning .dw-title {
     font-family: 'Unbounded', sans-serif;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 800;
     color: var(--danger);
-    text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
-  .cancelled-text { text-align: center; color: var(--muted); font-size: 14px; line-height: 1.6; }
-
-  /* Nav hint */
-  .nav-hint { font-size: 12px; color: var(--muted); text-align: center; margin-top: 12px; }
-
-  /* Variant badge */
-  .variant-badge {
-    font-size: 11px;
-    color: var(--muted);
-    background: var(--surface2);
-    border-radius: 20px;
-    padding: 4px 10px;
-    border: 1px solid var(--border);
-  }
+  #devtoolsWarning .dw-text { color: var(--muted); font-size: 14px; line-height: 1.7; }
 
   @media (max-width: 400px) {
     .card { padding: 20px 16px; }
@@ -402,8 +362,14 @@
 </head>
 <body>
 
+<!-- DevTools overlay -->
+<div id="devtoolsWarning">
+  <div class="dw-icon">🔒</div>
+  <div class="dw-title">Доступ закрыт</div>
+  <div class="dw-text">Обнаружены инструменты разработчика.<br>Закрой DevTools и обратись к учителю.</div>
+</div>
+
 <div class="wrapper">
-  <!-- TOP BAR -->
   <div class="top-bar" id="topBar" style="display:none">
     <div class="logo">📝 Контроль</div>
     <div class="timer-box" id="timerBox">
@@ -412,11 +378,11 @@
     </div>
   </div>
 
-  <!-- SCREEN: LOGIN -->
+  <!-- LOGIN -->
   <div class="screen active" id="screenLogin">
     <div class="card" style="margin-top:auto;margin-bottom:auto">
       <div class="login-title">Проверочная работа</div>
-      <div class="login-sub">Введи своё имя и фамилию, чтобы начать. У тебя будет 20 минут.</div>
+      <div class="login-sub">Введи своё имя и фамилию, чтобы начать. У тебя будет 20 минут. Не покидай страницу во время работы.</div>
       <label>Фамилия</label>
       <input type="text" id="inputSurname" placeholder="Иванов" autocomplete="off">
       <label>Имя</label>
@@ -425,22 +391,20 @@
     </div>
   </div>
 
-  <!-- SCREEN: TASK -->
+  <!-- TASK -->
   <div class="screen" id="screenTask">
     <div class="dots" id="dotsBar"></div>
 
     <div class="card">
       <div class="task-header">
         <span class="task-num" id="taskNum">Задание 1</span>
-        <span class="variant-badge" id="variantBadge">Вариант ?</span>
+        <!-- Variant intentionally hidden from student -->
       </div>
 
       <div class="task-img-placeholder" id="imgPlaceholder">
-        <div class="img-icon">🖼</div>
-        <div>Изображение с заданием</div>
-        <div class="img-label" id="imgHint">Задание 1 — Вариант ?</div>
-        <!-- Вставьте img теги ниже для каждого задания/варианта -->
-        <img id="taskImage" src="" alt="Задание">
+        <div class="img-icon" id="imgIcon">🖼</div>
+        <div id="imgLabel">Изображение с заданием</div>
+        <img id="taskImage" src="" alt="Задание" draggable="false">
       </div>
 
       <div class="answer-label">Твой ответ:</div>
@@ -453,38 +417,36 @@
     <div class="nav-hint" id="navHint">Задание 1 из 4</div>
   </div>
 
-  <!-- SCREEN: RESULT -->
+  <!-- RESULT - no grades, no correct answers shown -->
   <div class="screen" id="screenResult">
-    <div class="card">
+    <div class="card" style="margin-top:auto;margin-bottom:auto;text-align:center">
+      <div class="result-icon">✅</div>
       <div class="result-name" id="resultName">Иван Иванов</div>
-      <div class="result-sub" id="resultVariant">Вариант 1</div>
-      <div class="grade-badge" id="gradeEmoji">⭐</div>
-      <div class="score-circle" id="scoreCircle">
-        <span class="score-num" id="scoreNum">0</span>
-        <span class="score-max">из 4</span>
+      <div class="result-sub">
+        Работа успешно сдана.<br>
+        Результаты будут объявлены учителем.<br><br>
+        <span style="color:var(--muted);font-size:12px">Можешь закрыть страницу.</span>
       </div>
-      <div class="answers-breakdown" id="answersBreakdown"></div>
     </div>
-    <div class="nav-hint" style="margin-top:8px">Результат отправлен учителю ✓</div>
   </div>
 
-  <!-- SCREEN: CANCELLED -->
+  <!-- CANCELLED -->
   <div class="screen" id="screenCancelled">
     <div class="card" style="margin-top:auto;margin-bottom:auto">
       <div class="cancelled-icon">🚫</div>
       <div class="cancelled-title">Работа аннулирована</div>
-      <div class="cancelled-text">Зафиксировано более двух нарушений (покидание страницы или попытка сделать скриншот). Работа не принята. Обратись к учителю.</div>
+      <div class="cancelled-text">Зафиксировано критическое нарушение. Работа не принята. Обратись к учителю.</div>
     </div>
   </div>
 </div>
 
-<!-- BANNER -->
+<!-- WARNING BANNER -->
 <div class="banner-overlay" id="bannerOverlay">
   <div class="banner-card">
     <div class="banner-icon">⚠️</div>
     <div class="banner-title">Замечание!</div>
-    <div class="banner-text" id="bannerText">Ты покинул страницу во время выполнения работы. Это нарушение.</div>
-    <div class="banner-count" id="bannerCount">Нарушение 1 из 2</div>
+    <div class="banner-text" id="bannerText">Зафиксировано нарушение.</div>
+    <div class="banner-count" id="bannerCount">Предупреждение 1 из 2</div>
     <button class="btn btn-primary" onclick="dismissBanner()">Понял, продолжаю</button>
   </div>
 </div>
@@ -493,20 +455,21 @@
 // =====================
 // CONFIGURATION
 // =====================
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyMxyj0L5_UWuAnzxOB--Vvh3zoxUWn_zZtWHj-9R72ByaEjxtrZN44183TIevBiHk/exec'; // REPLACE!
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyMxyj0L5_UWuAnzxOB--Vvh3zoxUWn_zZtWHj-9R72ByaEjxtrZN44183TIevBiHk/exec';
 
+// Correct answers indexed by task (0-3) then variant (0-3)
 const CORRECT_ANSWERS = [
-  [0.5, 0.3, 0.5, 0.5],   // Task 1: variants 1-4
-  [0.096, 0.75, 0.9409, 0.87],               // Task 2
-  [9, 30.5, 3, 3750],              // Task 3
-  [11, -28, 18, 24]                // Task 4
+  [0.5,   0.3,    0.5,    0.5   ],
+  [0.096, 0.75,   0.9409, 0.87  ],
+  [9,     30.5,   3,      3750  ],
+  [11,    -28,    18,     24    ]
 ];
 
 // =====================
 // STATE
 // =====================
 let studentName = '';
-let variant = 0; // 0-3
+let variant = 0;
 let currentTask = 0;
 let answers = ['', '', '', ''];
 let violations = 0;
@@ -514,98 +477,197 @@ let timerInterval = null;
 let secondsLeft = 20 * 60;
 let quizActive = false;
 let finished = false;
+let bannerActive = false;
 
 // =====================
-// ANTI-CHEAT
+// ANTI-CHEAT: DevTools Detection
+// =====================
+let devtoolsOpen = false;
+
+function checkDevTools() {
+  const threshold = 160;
+  const widthDiff = window.outerWidth - window.innerWidth;
+  const heightDiff = window.outerHeight - window.innerHeight;
+  const open = widthDiff > threshold || heightDiff > threshold;
+
+  if (open && !devtoolsOpen) {
+    devtoolsOpen = true;
+    if (quizActive && !finished) {
+      // Instant cancel on devtools open
+      document.getElementById('devtoolsWarning').classList.add('show');
+      setTimeout(cancelQuiz, 1200);
+    }
+  } else if (!open && devtoolsOpen) {
+    devtoolsOpen = false;
+  }
+}
+
+// Debugger trap - slows/detects devtools
+function debuggerTrap() {
+  if (!quizActive || finished) return;
+  const start = performance.now();
+  // eslint-disable-next-line no-debugger
+  debugger;
+  const elapsed = performance.now() - start;
+  if (elapsed > 100) {
+    // Debugger was paused — devtools open
+    if (!devtoolsOpen) {
+      devtoolsOpen = true;
+      document.getElementById('devtoolsWarning').classList.add('show');
+      setTimeout(cancelQuiz, 1200);
+    }
+  }
+}
+
+setInterval(checkDevTools, 800);
+setInterval(debuggerTrap, 3000);
+
+// =====================
+// ANTI-CHEAT: Disable interactions
 // =====================
 
-// Disable right-click
-document.addEventListener('contextmenu', e => { if (quizActive) e.preventDefault(); });
+// Right-click
+document.addEventListener('contextmenu', e => e.preventDefault());
 
-// Disable text selection copy
+// Drag
+document.addEventListener('dragstart', e => e.preventDefault());
+document.addEventListener('drag', e => e.preventDefault());
+
+// Copy / Cut / Paste (from clipboard)
 document.addEventListener('copy', e => { if (quizActive) e.preventDefault(); });
 document.addEventListener('cut', e => { if (quizActive) e.preventDefault(); });
 
-// Disable common key combos
+// Touch long-press (iOS callout disabled via CSS, but also JS)
+document.addEventListener('touchstart', e => {
+  if (quizActive && e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+// Key combos
 document.addEventListener('keydown', e => {
   if (!quizActive) return;
+  const key = e.key.toLowerCase();
+  const ctrl = e.ctrlKey || e.metaKey;
   const blocked = (
-    (e.ctrlKey && ['c','C','u','U','s','S','p','P','a','A'].includes(e.key)) ||
-    (e.metaKey && ['c','C','u','U','s','S','p','P','a','A'].includes(e.key)) ||
-    e.key === 'F12' || e.key === 'PrintScreen'
-  );
+    ctrl && ['c','u','s','p','a','j','i','k','l','f'].includes(key)
+  ) || e.key === 'F12' || e.key === 'F5' || e.key === 'F10' || e.key === 'F11';
+
   if (blocked) {
     e.preventDefault();
-    if (e.key === 'PrintScreen') handleViolation('Попытка сделать снимок экрана зафиксирована.');
+    e.stopPropagation();
+    if (e.key === 'PrintScreen') handleViolation('screenshot');
   }
 });
 
-// Screenshot attempt (PrintScreen) — also capture via keyup
+// PrintScreen on keyup
 document.addEventListener('keyup', e => {
-  if (!quizActive) return;
+  if (!quizActive || finished) return;
   if (e.key === 'PrintScreen') {
-    handleViolation('Попытка сделать снимок экрана зафиксирована.');
+    handleViolation('screenshot');
   }
 });
 
-// Page visibility (tab switch, app switch)
+// =====================
+// ANTI-CHEAT: Visibility / Focus
+// =====================
+
+// Use a lock mechanism to avoid duplicate triggers
+let violationLock = false;
+
 document.addEventListener('visibilitychange', () => {
   if (!quizActive || finished) return;
   if (document.hidden) {
-    handleViolation('Ты покинул страницу во время выполнения работы. Это нарушение.');
+    triggerViolation('Ты покинул страницу во время работы.');
   }
 });
 
-// Blur event (alt-tab, window switch)
 window.addEventListener('blur', () => {
   if (!quizActive || finished) return;
-  handleViolation('Ты переключился с вкладки во время работы. Это нарушение.');
+  // Small delay to avoid false positives on banner focus
+  setTimeout(() => {
+    if (!quizActive || finished || bannerActive) return;
+    triggerViolation('Ты переключился с вкладки во время работы.');
+  }, 200);
 });
 
-// beforeunload
+// Fullscreen exit detection (optional — uncomment if you want to require fullscreen)
+// document.addEventListener('fullscreenchange', () => { ... });
+
 window.addEventListener('beforeunload', e => {
   if (quizActive && !finished) {
     e.preventDefault();
-    e.returnValue = 'Работа не завершена!';
+    e.returnValue = '';
   }
 });
+
+// Detect iframe embedding (anti-framing)
+if (window.self !== window.top) {
+  document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#ff4d6d;font-family:sans-serif"><h2>Доступ запрещён</h2><p>Страница не может быть встроена.</p></div>';
+}
+
+function triggerViolation(message) {
+  if (violationLock) return;
+  violationLock = true;
+  setTimeout(() => { violationLock = false; }, 1500);
+  handleViolation(message);
+}
 
 function handleViolation(message) {
   if (!quizActive || finished) return;
   violations++;
-  if (violations > 2) return; // already cancelled
 
-  document.getElementById('bannerText').textContent = message;
-  document.getElementById('bannerCount').textContent = `Нарушение ${violations} из 2`;
-  document.getElementById('bannerOverlay').classList.add('show');
-
-  if (violations >= 2) {
-    document.getElementById('bannerCount').textContent = '⛔ Следующее нарушение = аннулирование';
+  if (violations >= 3) {
+    cancelQuiz();
+    return;
   }
+
+  bannerActive = true;
+  const isLast = violations === 2;
+  document.getElementById('bannerText').textContent =
+    typeof message === 'string' ? message : 'Зафиксировано нарушение.';
+  document.getElementById('bannerCount').textContent = isLast
+    ? '⛔ Это последнее предупреждение. Следующее нарушение = аннулирование.'
+    : `Предупреждение ${violations} из 2`;
+  document.getElementById('bannerOverlay').classList.add('show');
 }
 
-// Track if we hit 3 violations after dismissal
+function handleViolation(msg) {
+  if (!quizActive || finished) return;
+  violations++;
+
+  if (violations >= 3) {
+    cancelQuiz();
+    return;
+  }
+
+  bannerActive = true;
+  document.getElementById('bannerText').textContent =
+    typeof msg === 'string' ? msg : 'Зафиксировано нарушение.';
+  document.getElementById('bannerCount').textContent = violations === 2
+    ? '⛔ Последнее предупреждение! Следующее нарушение аннулирует работу.'
+    : `Предупреждение ${violations} из 2`;
+  document.getElementById('bannerOverlay').classList.add('show');
+}
+
 function dismissBanner() {
   document.getElementById('bannerOverlay').classList.remove('show');
-  if (violations > 2) {
-    cancelQuiz();
-  }
+  bannerActive = false;
+  if (violations >= 3) cancelQuiz();
 }
 
-// Realistically: cancel on 3rd violation
-window.addEventListener('visibilitychange', () => {
-  if (!quizActive || finished) return;
-  if (document.hidden && violations > 2) {
-    setTimeout(cancelQuiz, 300);
-  }
-});
-
 function cancelQuiz() {
+  if (finished) return;
   quizActive = false;
   finished = true;
   clearInterval(timerInterval);
-  showScreen('screenCancelled');
+  document.getElementById('devtoolsWarning').classList.remove('show');
+  document.getElementById('bannerOverlay').classList.remove('show');
   document.getElementById('topBar').style.display = 'none';
+  showScreen('screenCancelled');
+
+  // Still send data with cancelled flag
+  sendResults(true);
 }
 
 // =====================
@@ -640,12 +702,10 @@ function updateTimerDisplay() {
 function startQuiz() {
   const surname = document.getElementById('inputSurname').value.trim();
   const name = document.getElementById('inputName').value.trim();
-  if (!surname || !name) {
-    alert('Пожалуйста, введи фамилию и имя.');
-    return;
-  }
+  if (!surname || !name) { alert('Пожалуйста, введи фамилию и имя.'); return; }
+
   studentName = surname + ' ' + name;
-  variant = Math.floor(Math.random() * 4); // 0-3 → variant 1-4
+  variant = Math.floor(Math.random() * 4); // hidden from student
 
   document.getElementById('topBar').style.display = 'flex';
   quizActive = true;
@@ -659,8 +719,6 @@ function startQuiz() {
 
 function renderTask() {
   document.getElementById('taskNum').textContent = `Задание ${currentTask + 1}`;
-  document.getElementById('variantBadge').textContent = `Вариант ${variant + 1}`;
-  document.getElementById('imgHint').textContent = `Задание ${currentTask + 1} — Вариант ${variant + 1}`;
   document.getElementById('answerInput').value = answers[currentTask] || '';
   document.getElementById('navHint').textContent = `Задание ${currentTask + 1} из 4`;
   document.getElementById('nextBtn').textContent = currentTask < 3 ? 'Следующее задание →' : '✓ Завершить работу';
@@ -674,13 +732,22 @@ function renderTask() {
     dots.appendChild(d);
   }
 
-  // Image: try to load task image
-  // Image files should be named: task{1-4}_v{1-4}.png (e.g. task1_v2.png)
+  // Image
   const img = document.getElementById('taskImage');
-  const placeholder = document.getElementById('imgPlaceholder');
+  const icon = document.getElementById('imgIcon');
+  const lbl = document.getElementById('imgLabel');
   const imgSrc = `task${currentTask+1}_v${variant+1}.png`;
-  img.onload = () => { img.style.display = 'block'; placeholder.querySelector('.img-icon').style.display = 'none'; placeholder.querySelector('div:nth-child(2)').style.display = 'none'; };
-  img.onerror = () => { img.style.display = 'none'; placeholder.querySelector('.img-icon').style.display = ''; placeholder.querySelector('div:nth-child(2)').style.display = ''; };
+
+  img.onload = () => {
+    img.style.display = 'block';
+    icon.style.display = 'none';
+    lbl.style.display = 'none';
+  };
+  img.onerror = () => {
+    img.style.display = 'none';
+    icon.style.display = '';
+    lbl.style.display = '';
+  };
   img.src = imgSrc;
 }
 
@@ -688,11 +755,11 @@ function nextTask() {
   answers[currentTask] = document.getElementById('answerInput').value.trim();
   if (!answers[currentTask]) {
     if (!confirm('Ты не ввёл ответ. Пропустить задание?')) return;
-    answers[currentTask] = '';
   }
   if (currentTask < 3) {
     currentTask++;
     renderTask();
+    document.getElementById('answerInput').focus();
   } else {
     finishQuiz();
   }
@@ -705,65 +772,30 @@ function finishQuiz() {
   clearInterval(timerInterval);
   document.getElementById('topBar').style.display = 'none';
 
-  showResult();
-  sendResults();
+  document.getElementById('resultName').textContent = studentName;
+  showScreen('screenResult');
+  sendResults(false);
 }
 
-function showResult() {
-  showScreen('screenResult');
-  document.getElementById('resultName').textContent = studentName;
-  document.getElementById('resultVariant').textContent = `Вариант ${variant + 1}`;
-
+function sendResults(cancelled) {
   let score = 0;
-  const breakdown = document.getElementById('answersBreakdown');
-  breakdown.innerHTML = '';
-
   for (let i = 0; i < 4; i++) {
-    const correct = CORRECT_ANSWERS[i][variant];
-    const userVal = parseFloat(answers[i]);
-    const isRight = Math.abs(userVal - correct) < 0.001;
-    if (isRight) score++;
-
-    const row = document.createElement('div');
-    row.className = 'breakdown-item';
-    row.innerHTML = `
-      <span>Задание ${i+1}</span>
-      <span>Ответ: <b>${answers[i] || '—'}</b></span>
-      <span class="${isRight ? 'ans-correct' : 'ans-wrong'}">${isRight ? '✓' : '✗ ' + correct}</span>
-    `;
-    breakdown.appendChild(row);
+    const v = parseFloat(answers[i]);
+    if (!isNaN(v) && Math.abs(v - CORRECT_ANSWERS[i][variant]) < 0.001) score++;
   }
 
-  document.getElementById('scoreNum').textContent = score;
-
-  const grades = ['', '2', '3', '4', '5'];
-  const emojis = ['', '😟', '😐', '🙂', '🌟'];
-  const colors = ['', '#ff4d6d', '#ffb347', '#4f8ef7', '#6ee7c7'];
-  const grade = score === 0 ? 1 : score;
-  document.getElementById('gradeEmoji').textContent = emojis[grade] + ' ' + grades[grade];
-  document.getElementById('scoreCircle').style.boxShadow = `0 0 0 4px ${colors[grade]}33`;
-  document.getElementById('scoreNum').style.color = colors[grade];
-}
-
-function sendResults() {
   const data = {
     name: studentName,
-    variant: variant + 1,
+    variant: variant + 1,  // teacher sees it, student doesn't
     answers: answers.join('; '),
-    score: (() => {
-      let s = 0;
-      for (let i = 0; i < 4; i++) {
-        if (Math.abs(parseFloat(answers[i]) - CORRECT_ANSWERS[i][variant]) < 0.001) s++;
-      }
-      return s;
-    })(),
-    violations,
+    score: score,
+    violations: violations,
+    cancelled: cancelled ? 'ДА' : 'нет',
     time: new Date().toLocaleString('ru-RU')
   };
 
   const params = new URLSearchParams(data);
-  fetch(GOOGLE_SCRIPT_URL + '?' + params.toString(), { method: 'GET', mode: 'no-cors' })
-    .catch(() => {});
+  fetch(GOOGLE_SCRIPT_URL + '?' + params.toString(), { method: 'GET', mode: 'no-cors' }).catch(() => {});
 }
 
 // =====================
@@ -773,7 +805,15 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
-</script>
 
+// =====================
+// Disable view-source shortcut at document level
+// =====================
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i','j','c'].includes(e.key.toLowerCase())) {
+    e.preventDefault();
+  }
+}, true);
+</script>
 </body>
 </html>
