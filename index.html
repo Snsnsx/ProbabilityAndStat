@@ -583,12 +583,14 @@ document.addEventListener('visibilitychange', () => {
 });
 
 window.addEventListener('blur', () => {
-  if (!quizActive || finished) return;
-  // Small delay to avoid false positives on banner focus
+  if (!quizActive || finished || bannerActive) return;
+  // Only fire if focus truly left the browser window (not just moved to an input/button inside the page)
   setTimeout(() => {
     if (!quizActive || finished || bannerActive) return;
+    // If focus is now inside the document — it's just an internal element focus, not a tab switch
+    if (document.hasFocus()) return;
     triggerViolation('Ты переключился с вкладки во время работы.');
-  }, 200);
+  }, 300);
 });
 
 // Fullscreen exit detection (optional — uncomment if you want to require fullscreen)
